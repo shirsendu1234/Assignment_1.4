@@ -1,0 +1,103 @@
+5
+1)reading a json and making a df :
+===============================
+install.packages("rjson")
+# Load the package required to read JSON files.
+library("rjson")
+#set path
+setwd=("C:/Users/IBM_ADMIN/Desktop")
+#loading json data 
+data=fromJSON(file = "test.json")
+#creating data frame
+json_data=as.data.frame(data)
+#printing the data data frame
+print(json_data)
+
+output:
+=======
+> print(json_data)
+  ID     Name Salary  StartDate       Dept
+1  1     Rick  623.3   1/1/2012         IT
+2  2      Dan  515.2  9/23/2013 Operations
+3  3 Michelle    611 11/15/2014         IT
+4  4     Ryan    729  5/11/2014         HR
+5  5     Gary 843.25  3/27/2015    Finance
+6  6     Nina    578  5/21/2013         IT
+7  7    Simon  632.8  7/30/2013 Operations
+8  8     Guru  722.5  6/17/2014    Finance
+> 
+
+2)
+=======================
+data set:
+========
+js<-'{
+"name": null, "release_date_local": null, "title": "3 (2011)",
+"opening_weekend_take": 1234, "year": 2011,
+"release_date_wide": "2011-09-16", "gross": 59954
+}'
+solution:
+==========
+#load package to read json
+library("rjson")
+#given json
+js<-'{
+"name": null, "release_date_local": null, "title": "3 (2011)",
+"opening_weekend_take": 1234, "year": 2011,
+"release_date_wide": "2011-09-16", "gross": 59954
+}'
+#converting to json
+js=fromJSON(js)
+#removing null value
+js <- lapply(js, function(x) {
+  x[sapply(x, is.null)] <- NA
+  unlist(x)
+})
+do.call("rbind", js)
+
+
+output
+=====
+> do.call("rbind", js)
+                     [,1]        
+title                "3 (2011)"  
+opening_weekend_take "1234"      
+year                 "2011"      
+release_date_wide    "2011-09-16"
+gross                "59954"     
+
+
+3)
+variable binning:
+=================
+set.seed(100)
+rpois(100,5)
+range(rpois(100,5))[1]:rpois(100,5)[2]
+cut(rpois(100,5),range(rpois(100,5))[1]:rpois(100,5)[2])
+cut(rpois(100,5),pretty(rpois(100,5)))
+
+output
+=======
+> set.seed(100)
+> rpois(100,5)
+  [1]  4  3  5  2  5  5  7  4  5  3  6  8  4  4  7  6  3  4  4  6  5  6  5  6  4  3  7  8  5  4  5  8  4  9  6  8  3  6 11  3  4  7  7  7  5  5  7  8  3
+ [50]  4  4  3  3  4  5  3  2  3  5  3  5  6  9  6  5  4  5  5  3  6  4  4  5  9  6  6  7  7  7  2  5  5  8 10  1  5  6  3  4  6  8  3  4  5  8  4  5  3
+ [99]  1  7
+> range(rpois(100,5))
+[1]  1 12
+> range(rpois(100,5))[1]:rpois(100,5)[2]
+[1] 1 2 3 4 5 6
+> cut(rpois(100,5),range(rpois(100,5))[1]:rpois(100,5)[2])
+  [1] (4,5] (3,4] (3,4] (3,4] <NA>  (4,5] <NA>  <NA>  <NA>  (3,4] (2,3] <NA>  (3,4] <NA>  (2,3] <NA>  <NA>  <NA>  <NA>  <NA>  <NA>  (4,5] <NA>  <NA> 
+ [25] (1,2] (4,5] (2,3] <NA>  (0,1] (2,3] <NA>  (1,2] (3,4] (2,3] (2,3] <NA>  <NA>  <NA>  (3,4] <NA>  (1,2] (3,4] (4,5] <NA>  (4,5] <NA>  (4,5] (3,4]
+ [49] <NA>  (2,3] (3,4] (4,5] <NA>  <NA>  (1,2] (4,5] <NA>  <NA>  (3,4] (3,4] <NA>  <NA>  <NA>  <NA>  (3,4] <NA>  (1,2] (2,3] (3,4] (3,4] (3,4] (3,4]
+ [73] (3,4] (3,4] <NA>  <NA>  <NA>  (4,5] (4,5] (4,5] (2,3] (4,5] <NA>  (1,2] (1,2] (4,5] (1,2] <NA>  <NA>  (3,4] <NA>  (3,4] (3,4] (3,4] (1,2] (4,5]
+ [97] (3,4] <NA>  <NA>  (3,4]
+Levels: (0,1] (1,2] (2,3] (3,4] (4,5]
+> cut(rpois(100,5),pretty(rpois(100,5)))
+  [1] (4,6]  (4,6]  (6,8]  (0,2]  (4,6]  (2,4]  (2,4]  (4,6]  (6,8]  (0,2]  (2,4]  (8,10] (6,8]  (4,6]  (2,4]  (0,2]  (4,6]  (4,6]  <NA>   (4,6]  (0,2] 
+ [22] (2,4]  <NA>   (0,2]  (6,8]  (0,2]  (6,8]  (8,10] (4,6]  (4,6]  (4,6]  (2,4]  <NA>   (4,6]  (4,6]  (4,6]  (2,4]  (6,8]  (6,8]  (8,10] (2,4]  (6,8] 
+ [43] (6,8]  (4,6]  (6,8]  (4,6]  (6,8]  (0,2]  (2,4]  (4,6]  (0,2]  (4,6]  (4,6]  (4,6]  (4,6]  (0,2]  (0,2]  (2,4]  (4,6]  (6,8]  (2,4]  (6,8]  (4,6] 
+ [64] (2,4]  (2,4]  (4,6]  (2,4]  (4,6]  (0,2]  (4,6]  (6,8]  (2,4]  (2,4]  (6,8]  (2,4]  (6,8]  (4,6]  (2,4]  (4,6]  (2,4]  (2,4]  (2,4]  (6,8]  (2,4] 
+ [85] (6,8]  (4,6]  (0,2]  (0,2]  (2,4]  (6,8]  (6,8]  (0,2]  (0,2]  (2,4]  (2,4]  (0,2]  (0,2]  (4,6]  (2,4]  (4,6] 
+Levels: (0,2] (2,4] (4,6] (6,8] (8,10] (10,12]
